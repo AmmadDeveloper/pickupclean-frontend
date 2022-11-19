@@ -1,24 +1,19 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { LoginClient } from '../Misc/Api';
+import { LoginClient, setCookie } from '../Misc/Api';
 import {useNavigate} from 'react-router-dom';
 
 
-const LoginForm = ({showNotification}) => {
+const LoginForm = ({showNotification,setUser}) => {
   const navigate=useNavigate();
   const onFinish = async (values) => {
     const resp=await LoginClient.post('token',{"email":values.username,"password":values.password});
     if (resp.data.statuscode===200){
-      debugger;
       let cookie="";
       if(values.remember){
-        cookie=`authtoken=${resp.data.token}`
+        cookie=setCookie("authtoken",resp.data.token,30)
       }else{
-        let now = new Date();
-        let time = now.getTime();
-        let expireTime = time + 1000*36000;
-        now.setTime(expireTime);
-        cookie=`authtoken=${resp.data.token};expires=${now.toUTCString()};path=/`;
+        cookie=setCookie("authtoken",resp.data.token,.20)
       }
       document.cookie = cookie;
       //document.cookie=`authtoken=${resp.data.token}`;

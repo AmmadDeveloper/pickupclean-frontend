@@ -9,7 +9,6 @@ import {
   PushpinOutlined,
   LogoutOutlined,
   SettingOutlined,
-  DownOutlined,
   WalletOutlined,
   PercentageOutlined,
   UserOutlined,
@@ -23,7 +22,7 @@ import {
 import { Outlet,Link } from 'react-router-dom';
 
 import logo from '../Static/imgs/logonew.png'
-import { AdminClient } from '../Misc/Api';
+import { AdminClient, eraseCookie } from '../Misc/Api';
 const { Header, Content, Footer, Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -36,13 +35,18 @@ function getItem(label, key, icon, children) {
 }
 
 class AppLayout extends React.Component {
-  navigate=createRef();
-  state = {
-    collapsed: false,
-    visible:false,
-    notifications:[],
-    broken:false
-  };
+  constructor(props){
+    super(props);
+    this.navigate=createRef();
+    this.state = {
+      collapsed: false,
+      visible:false,
+      notifications:[],
+      broken:false
+    };
+    this.logout=this.logout.bind(this);
+  }
+  
 
 
   fetchNotification=()=>{
@@ -87,7 +91,8 @@ class AppLayout extends React.Component {
     });
   };
   logout=()=>{
-    document.cookie="authtoken="
+    eraseCookie('authtoken');
+    this.props.setUser(false);
     this.navigate.current.click();
   }
 
@@ -172,11 +177,11 @@ class AppLayout extends React.Component {
                 <Menu.Item key={"menu0"} style={{marginRight:'auto',display:`${this.state.broken?"block":"none"}`}} className='logo'>
                     <img src={logo} style={{width:'80%',maxWidth:'140px'}} alt="not found"/>
                 </Menu.Item>
-                  <Menu.Item key={"menu1"}>
+                  {/* <Menu.Item key={"menu1"}>
                     <Dropdown overlay={this.menu} placement="bottom">
-                      <div style={{float:'revert'}}> {"User"} <DownOutlined /></div>
+                      <div style={{float:'revert'}}> {"Menu"} <DownOutlined /></div>
                     </Dropdown>
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item key={'menu2'} onClick={this.showDrawer}>
                     <div>
                       {(this.state.notifications.length===0)?<NotificationOutlined  style={{fontSize:'16px'}}/>:<Badge count={this.state.notifications.length}>

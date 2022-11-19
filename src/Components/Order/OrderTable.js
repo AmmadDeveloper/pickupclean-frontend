@@ -40,13 +40,14 @@ export default function OrderTable(){
         <div style={{float:'right',marginTop:'10px',marginBottom:'20px',position:'relative',zIndex:'1'}}><AlignRightOutlined/> filters: 
             <Select onChange={(x)=>setTypeFilter(x)} defaultValue="all" style={{ width: '150px',marginRight:'10px',marginLeft:'10px' }} allowClear>
                 <Option value="all">All</Option>
-                <Option value="confirmed">Confirmed</Option>
+                <Option value="in-progress">In Progress</Option>
                 <Option value="declined">Declined</Option>
                 <Option value="refunded">Refunded</Option>
-                <Option value="pickedup">Pickedup</Option>
+                <Option value="cancelled">Cancelled</Option>
+                {/* <Option value="pickedup">Pickedup</Option>
                 <Option value="processing">Processing</Option>
-                <Option value="shipped">Shipped</Option>
-                <Option value="delivered">Delivered</Option>
+                <Option value="shipped">Shipped</Option> */}
+                <Option value="completed">Completed</Option>
             </Select>
             <RangePicker onChange={(x)=>setDateFilter(x)} />
         </div>
@@ -61,19 +62,21 @@ export default function OrderTable(){
             <Column responsive={['lg']} title="Status" dataIndex="status" key="status" render={
                 (status)=>{
                     switch(status){
-                        case "confirmed":
+                        case "in-progress":
                             return(<Tag color="#fadb14">{status}</Tag>);
                         case "declined":
                             return(<Tag color="#f5222d">{status}</Tag>);
                         case "refunded":
                             return(<Tag color="#1890ff">{status}</Tag>)
-                        case "pickedup":
-                            return(<Tag color="#fa8c16">{status}</Tag>)
-                        case "processing":
+                        // case "pickedup":
+                        //     return(<Tag color="#fa8c16">{status}</Tag>)
+                        // case "processing":
+                        //     return(<Tag color="#000000">{status}</Tag>)
+                        case "cancelled":
                             return(<Tag color="#000000">{status}</Tag>)
-                        case "shipped":
-                            return(<Tag color="#722ed1">{status}</Tag>)
-                        case "delivered":
+                        // case "shipped":
+                        //     return(<Tag color="#722ed1">{status}</Tag>)
+                        case "completed":
                             return(<Tag color="#52c41a">{status}</Tag>)
                         default:
                             return(<Tag color="#1890ff">{status}</Tag>)

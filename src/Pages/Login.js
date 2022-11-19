@@ -24,7 +24,7 @@ export default class Login extends React.Component{
                             <img style={{width:"80%",marginLeft:'auto',marginRight:'auto',display:'block',marginBottom:'10%'}} src={Logo} alt="Not Found" />
                             </Col>
                         </Row>
-                        <LoginForm showNotification={this.openNotificationWithIcon}/>
+                        <LoginForm setUser={this.props.setUser} showNotification={this.openNotificationWithIcon}/>
                     </Card>
                 </Col>
                 <Col lg={{ span: 6 }} md={24} sm={24} xs={24}></Col>

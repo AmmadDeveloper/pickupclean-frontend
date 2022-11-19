@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter,Routes,Route} from 'react-router-dom';
+import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
 import Layout from './Common/Layout';
 import Services from './Pages/Services';
 import Dashboard from './Pages/Dashboard';
@@ -37,59 +37,88 @@ import NewMessage from './Components/Messages/NewMessage';
 import Email from './Pages/Email';
 import EmailTable from './Components/Email/EmailTable';
 import NewEmail from './Components/Email/NewEmail';
+import { useState } from 'react';
+import { getCookie } from './Misc/Api';
+
+const ProtectedRoute = ({
+  user,
+  setUser,
+  redirectPath = '/login',
+  children,
+}) => {
+    var token=getCookie('authtoken')
+    if (token!==undefined && token!=='' && token!=null){
+      setUser(true)
+      return children ? children : <Navigate to={redirectPath} replace />;
+      // 
+    }else{
+      return <Navigate to={redirectPath} replace />;
+    }
+  
+};
+
+
+
 function App() {
+  const [user,setUser]=useState(false);
+  // useEffect(()=>{
+  //   var login=window.localStorage.getItem('login');
+  //   if (login!==undefined){
+  //     setUser(true)
+  //   }
+  // },[])
   return (
     <>
     <BrowserRouter basename='/admin'>
       <Routes>
-        <Route index element={<Login/>}></Route>
-        <Route path="login" element={<Login/>}></Route>
-        <Route path="panel" element={<Layout/>}>
-          <Route path="dashboard" element={<Dashboard/>}/>
-          <Route path="services" element={<Services/>}>
-            <Route path="list" element={<ServicesTable/>}/>
-            <Route path="new" element={<NewService/>}/>
-            <Route path="edit" element={<EditService/>}/>
+        <Route index element={<Login setUser={setUser}/>}></Route>
+        <Route path="login" element={<Login setUser={setUser}/>}></Route>
+        <Route path="panel" element={<ProtectedRoute setUser={setUser} user={user}><Layout setUser={setUser} /></ProtectedRoute>}>
+          <Route path="dashboard" element={<ProtectedRoute setUser={setUser} user={user}><Dashboard/></ProtectedRoute>}/>
+          <Route path="services" element={<ProtectedRoute setUser={setUser} user={user}><Services/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><ServicesTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewService/></ProtectedRoute>}/>
+            <Route path="edit" element={<ProtectedRoute setUser={setUser} user={user}><EditService/></ProtectedRoute>}/>
           </Route>
-          <Route path="category" element={<Category/>}>
-            <Route path="list" element={<CategoryTable/>}/>
-            <Route path="new" element={<NewCategory/>}/>
-            <Route path="edit" element={<EditCategory/>}/>
+          <Route path="category" element={<ProtectedRoute setUser={setUser} user={user}><Category/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><CategoryTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewCategory/></ProtectedRoute>}/>
+            <Route path="edit" element={<ProtectedRoute setUser={setUser} user={user}><EditCategory/></ProtectedRoute>}/>
           </Route>
-          <Route path="types" element={<Types/>}>
-            <Route path="list" element={<TypesTable/>}/>
-            <Route path="new" element={<NewType/>}/>
-            <Route path="edit" element={<EditType/>}/>
+          <Route path="types" element={<ProtectedRoute setUser={setUser} user={user}><Types/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><TypesTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewType/></ProtectedRoute>}/>
+            <Route path="edit" element={<ProtectedRoute setUser={setUser} user={user}><EditType/></ProtectedRoute>}/>
           </Route>
-          <Route path="postcode" element={<PostalCode/>}>
-            <Route path="list" element={<PostalCodeTable/>}/>
-            <Route path="new" element={<NewPostalCode/>}/>
-            <Route path="edit" element={<EditPostalCode/>}/>
+          <Route path="postcode" element={<ProtectedRoute setUser={setUser} user={user}><PostalCode/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><PostalCodeTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewPostalCode/></ProtectedRoute>}/>
+            <Route path="edit" element={<ProtectedRoute setUser={setUser} user={user}><EditPostalCode/></ProtectedRoute>}/>
           </Route>
-          <Route path="promo" element={<Promo/>}>
-            <Route path="list" element={<PromoTable/>}/>
-            <Route path="new" element={<NewPromo/>}/>
+          <Route path="promo" element={<ProtectedRoute setUser={setUser} user={user}><Promo/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><PromoTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewPromo/></ProtectedRoute>}/>
           </Route>
-          <Route path="payment" element={<Payment/>}>
-            <Route path="list" element={<PaymentTable/>}/>
+          <Route path="payment" element={<ProtectedRoute setUser={setUser} user={user}><Payment/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><PaymentTable/></ProtectedRoute>}/>
           </Route>
-          <Route path="order" element={<Order/>}>
-            <Route path="list" element={<OrderTable/>}/>
-            <Route path="details" element={<OrderDetail/>}/>
+          <Route path="order" element={<ProtectedRoute setUser={setUser} user={user}><Order/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><OrderTable/></ProtectedRoute>}/>
+            <Route path="details" element={<ProtectedRoute setUser={setUser} user={user}><OrderDetail/></ProtectedRoute>}/>
           </Route>
-          <Route path="customer" element={<Customers/>}>
-            <Route path="list" element={<CustomerTable/>}/>
-            <Route path="details" element={<CustomerDetail/>}/>
+          <Route path="customer" element={<ProtectedRoute setUser={setUser} user={user}><Customers/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><CustomerTable/></ProtectedRoute>}/>
+            <Route path="details" element={<ProtectedRoute setUser={setUser} user={user}><CustomerDetail/></ProtectedRoute>}/>
           </Route>
-          <Route path="email" element={<Email/>}>
-            <Route path="list" element={<EmailTable/>}/>
-            <Route path="new" element={<NewEmail/>}/>
+          <Route path="email" element={<ProtectedRoute setUser={setUser} user={user}><Email/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><EmailTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewEmail/></ProtectedRoute>}/>
           </Route>
-          <Route path="messages" element={<Messages/>}>
-            <Route path="list" element={<MessagesTable/>}/>
-            <Route path="new" element={<NewMessage/>}/>
+          <Route path="messages" element={<ProtectedRoute setUser={setUser} user={user}><Messages/></ProtectedRoute>}>
+            <Route path="list" element={<ProtectedRoute setUser={setUser} user={user}><MessagesTable/></ProtectedRoute>}/>
+            <Route path="new" element={<ProtectedRoute setUser={setUser} user={user}><NewMessage/></ProtectedRoute>}/>
           </Route>
-          <Route path="settings" element={<Settings/>}></Route>
+          <Route path="settings" element={<ProtectedRoute setUser={setUser} user={user}><Settings/></ProtectedRoute>}></Route>
 
         </Route>
       </Routes>

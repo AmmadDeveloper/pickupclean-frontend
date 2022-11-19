@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Modal, Upload } from 'antd';
+import { Modal, Upload,notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { AdminClient, Serverurl } from '../../Misc/Api';
 
@@ -30,9 +30,34 @@ const UploadImage = () => {
     }
     fetchImages();
   },[])
+  const openNotificationWithIcon = data => {
+      notification['error']({
+        message: data.statuscode,
+        description:data.message
+      });
+  };
 
+  const openNotificationWithIconSuccess = data => {
+      notification[data.message]({
+        message: data.statusmessge,
+        description:data.message
+      });
+  };
   const handleCancel = () => setPreviewVisible(false);
-
+  const handleRemove=(x)=>{
+    AdminClient.post(`homeimages?id=${x.uid}`).then((res)=>{
+      if(res.status===200){
+        openNotificationWithIconSuccess(res.data);
+      }else{
+        var data={
+          "statuscode":400,
+          "message":'Request not completed please try again later'
+        }
+        openNotificationWithIcon(data);
+      }
+    })
+    console.log(x.uid);
+  }
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -65,10 +90,11 @@ const UploadImage = () => {
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        onRemove={handleRemove}
       >
         {fileList.length >= 5 ? null : uploadButton}
       </Upload>
-      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal visible={previewVisible} footer={null} title={previewTitle} onCancel={handleCancel}>
         <img
           alt="example"
           style={{

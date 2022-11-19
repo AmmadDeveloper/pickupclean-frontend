@@ -1,6 +1,6 @@
 import React,{useEffect, useRef, useState} from "react";
-import { Card,Badge,Input,Button,notification,Row,Col } from "antd";
-import { Link, useOutletContext,useNavigate } from "react-router-dom";
+import { Card,Badge,Button,Row,Col } from "antd";
+import { Link, useOutletContext } from "react-router-dom";
 import { AdminClient } from "../../Misc/Api";
 import DetailTile from "./DetailTile";
 
@@ -9,7 +9,6 @@ const OrderDetail=()=>{
     const [loading,collection,setCollection,viewData,detailId,setDetailId,reloadOrders]=useOutletContext();
     const navigate=useRef();
     const [order,setorder]=useState({cartdata:[],paymentdata:{}})
-    const backLink=useRef();
     const goBack=()=>{
         navigate.current.click()
         
@@ -30,9 +29,9 @@ const OrderDetail=()=>{
     },[])
     const ActionBtns=()=>{
         switch(order.status){
-            case "confirmed":
+            case "in-progress":
                 return(<>
-                    <Button onClick={()=>updateStatus("pickedup")} type="primary">Pickup</Button>
+                    <Button onClick={()=>updateStatus("completed")} type="primary">Completed</Button>
                     <Button onClick={()=>updateStatus("declined")} type="primary" danger style={{marginLeft:'5px'}}>Decline</Button>
                     <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
             case "declined":
@@ -41,19 +40,19 @@ const OrderDetail=()=>{
             case "refunded":
                 return(<>
                     <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
-            case "pickedup":
-                return(<>
-                    <Button onClick={()=>updateStatus("processing")} type="primary">Start Processing</Button>
-                    <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
-            case "processing":
-                return(<>
-                    <Button onClick={()=>updateStatus("shipped")} type="primary">Ship</Button>
-                    <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
-            case "shipped":
-                return(<>
-                    <Button onClick={()=>updateStatus("delivered")} type="primary">Delivered</Button>
-                    <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
-            case "delivered":
+            // case "pickedup":
+            //     return(<>
+            //         <Button onClick={()=>updateStatus("processing")} type="primary">Start Processing</Button>
+            //         <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
+            // case "processing":
+            //     return(<>
+            //         <Button onClick={()=>updateStatus("shipped")} type="primary">Ship</Button>
+            //         <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
+            // case "shipped":
+            //     return(<>
+            //         <Button onClick={()=>updateStatus("delivered")} type="primary">Delivered</Button>
+            //         <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
+            case "completed":
                 return(<>
                     <Button onClick={goBack} type="ghost" style={{marginLeft:'5px'}}>Back</Button></>)
             default:
@@ -62,19 +61,19 @@ const OrderDetail=()=>{
     }
     const getColor=()=>{
         switch(order.status){
-            case "confirmed":
+            case "in-progress":
                 return('yellow');
             case "declined":
                 return('red');
             case "refunded":
                 return('blue')
-            case "pickedup":
-                return('orange')
-            case "processing":
-                return('black')
-            case "shipped":
-                return('purple')
-            case "delivered":
+            // case "pickedup":
+            //     return('orange')
+            // case "processing":
+            //     return('black')
+            // case "shipped":
+            //     return('purple')
+            case "completed":
                 return('green')
             default:
                 return('blue')
